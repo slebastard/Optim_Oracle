@@ -12,10 +12,24 @@ function G = fonctio_grad(qc)
 endfunction
 
 function H = fonctio_hessian(q0, qc)
-    H = (1.0/3.0).*(B' * (2.*(q0 + B*qc) + abs(q0 + B*qc)).*B)
+    v = r.*abs(q0 + B*qc);
+    V = cat(2, v, v, v);
+    H = 2*(B' * (V.*B));
 endfunction
     
-function [F,G,H,ind] = OraclePG(qc,ind)
+function [F,G,ind] = OraclePG(qc,ind)
+    select ind
+    case 2 then
+        F = fonctio(qc)
+    case 3 then
+        G = fonctio_grad(qc)
+    case 4 then
+        F = fonctio(qc)
+        G = fonctio_grad(qc)
+    end
+endfunction
+
+function [F,G,H,ind] = OraclePH(qc,ind)
     select ind
     case 2 then
         F = fonctio(qc)
