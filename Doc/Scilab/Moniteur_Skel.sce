@@ -40,7 +40,7 @@
    //
    exec('Oracle.sce');
    exec('Gradient_F.sci');
-   exec('Wolfe_Skel.sci');
+   exec('Methodes.sci');
    titrgr = "Fonction optim de Scilab sur le probleme primal";
 
     exec('QuasiNewton.sce');
@@ -58,14 +58,14 @@
 // ----------------------------
 // Minimisation proprement dite
 // ----------------------------
-    meth = "GRADC";
+    meth = "QNEWT";
     iter_max = 10000;
-    iter_max_alpha = 10000;
+    iter_max_alpha = 1000;
     alpha0 = 1;
    // Exemple : la fonction "optim" de Scilab
-   //
+
    [fopt,xopt,gopt,log_iter,log_F] = Optim(OraclePH, xini, alpha0, iter_max, iter_max_alpha, meth);
-    plot(log_iter, log_F);
+    //plot(log_iter, log_F);
    // -----> A completer...
 
 // --------------------------

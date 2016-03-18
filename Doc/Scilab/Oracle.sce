@@ -11,10 +11,10 @@ function G = fonctio_grad(qc)
     G = tmp20 + tmp30
 endfunction
 
-function H = fonctio_hessian(q0, qc)
+function H = fonctio_hessian(qc)
     v = r.*abs(q0 + B*qc);
-    V = cat(2, v, v, v);
-    H = 2*(B' * (V.*B));
+    V = diag(v);
+    H = (B' * V * B);
 endfunction
     
 function [F,G,ind] = OraclePG(qc,ind)
