@@ -1,9 +1,9 @@
 function [W1_is_OK] = Wolfe1_cond(F,Fd,G,alpha,D,w1)
-    W1_is_OK = (Fd <= F + w1*alpha*G'*D)
+    W1_is_OK = (Fd <= F + w1*alpha*G'*D);
 endfunction
 
 function [W2_is_OK] = Wolfe2_cond(F,G,Gd,alpha,D,w2)
-    W2_is_OK = (Gd'*D >= w2*G'*D)
+    W2_is_OK = (Gd'*D >= w2*G'*D);
 endfunction
 
 function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
@@ -32,7 +32,6 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
 //    omega2 : coefficient pour la 2-eme condition de Wolfe //
 //                                                          //
 //////////////////////////////////////////////////////////////
-
 
 // -------------------------------------
 // Coefficients de la recherche lineaire
@@ -67,8 +66,7 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
    // xn represente le point pour la valeur courante du pas,
    // xp represente le point pour la valeur precedente du pas.
 
-   stop = 0;
-   while (ok == 0 & stop == 0 & iter <= iter_max)
+   while (ok == 0 & iter <= iter_max)
       
       xp = xn;
       xn = x + (alphan*D);
@@ -79,7 +77,6 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
       if (~Wolfe1_cond(F, Fd, G, alphan, D, omega1)) then
           alphamax = alphan;
           alphan = 1/2*(alphamin+alphamax);
-          stop = 0;
       else
           if (~Wolfe2_cond(F, G, Gd, alphan, D, omega2)) then
               if (alphamax == %inf) then
@@ -88,7 +85,7 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
                   alphamin = (1/2)*(alphamin + alphamax);
               end
           else
-              stop = 0;
+              ok = 1;
           end
       end
       
@@ -110,48 +107,53 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
    end
 endfunction
 
-function [fopt, xopt, gopt] = Optim(Oracle, xini, alpha0, iter_max, iter_max_alpha, meth)
-    alpha = alpha0;
+function [fopt, xopt, gopt,log_iter,log_F] = Optim(Oracle, xini, alpha0, iter_max, iter_max_alpha, meth)
     x = xini;
-    iter = 1;
+    xp = xini;
     W = ones(3,3);
-    while iter <= iter_max
-        [F, G] = Oracle(x, ind=4);
+    log_iter = [];
+    log_F = [];
+    for iter = 1:iter_max
+        [F, G] = Oracle(x, 4);
+        alpha = alpha0;
+        
         select meth
         case "GRADF" then
-            alpha = alpha0;
             D = -G;
         case "GRADV" then
-            if(iter == 1) then
-                alpha = alpha0;
-            else
-                alpha = Wolfe(alpha, x, D, Oracle, iter_max_alpha);
-            end
+            alpha = Wolfe(alpha, x, D, Oracle, iter_max_alpha);
             D = -G;
         case "NEWTN" then
-            if(iter == 1) then
-                alpha = alpha0;
-            else
-                alpha = Wolfe(alpha, x, D, Oracle, iter_max_alpha);
-            end
+            alpha = Wolfe(alpha, x, D, Oracle, iter_max_alpha);
             D = newton(Oracle, x);
         case "QNEWT" then
-            if(iter == 1) then
-                alpha = alpha0;
-            else
-                alpha = Wolfe(alpha, x, D, Oracle, iter_max_alpha);
-            end
+            alpha = Wolfe(alpha, x, D, Oracle, iter_max_alpha);
             [D, W] = quasi_newton(Oracle, x);
         case "GRADC" then
-            if(iter == 1) then
-                alpha = alpha0;
-            else
-                alpha = Wolfe(alpha, x, D, Oracle, iter_max_alpha);
-            end
-            D = gradient_conjugue(Oracle, x);
+            alpha = Wolfe(alpha, x, D, Oracle, iter_max_alpha);
+            D = gradient_conjugue(Oracle, xp, x, D);
         end
+        xp = x;
+        x = xp + alpha * D;
+        [Fc, Gc] = Oracle(x, 4);
+        log_iter($+1) = iter;
+        log_F($+1) = Fc;
+    end
+    xopt = x;
+    [fopt, gopt] = Oracle(xopt, 4);
+endfunction
+
+function [fopt, xopt, gopt,log_iter,log_F] = OptimTest(Oracle, xini, alpha0, iter_max, iter_max_alpha, meth)
+    alpha = 1;
+    x = xini;
+    W = ones(3,3);
+    log_iter = [];
+    log_F = [];
+    for iter = 1:iter_max
+        [F, G] = Oracle(x, 4);
+        D = -G;
         x = x + alpha * D;
     end
     xopt = x;
-    [fopt, gopt] = Oracle(xopt, ind=4);
+    [fopt, gopt] = Oracle(xopt, 4);
 endfunction

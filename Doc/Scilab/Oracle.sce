@@ -49,3 +49,4 @@ function [F,G,H,ind] = OraclePH(qc,ind)
         H = fonctio_hessian(qc)
     end
 endfunction
+
