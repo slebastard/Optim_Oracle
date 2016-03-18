@@ -113,6 +113,8 @@ function [fopt, xopt, gopt,log_iter,log_F] = Optim(Oracle, xini, alpha0, iter_ma
     W = ones(3,3);
     log_iter = [];
     log_F = [];
+    [F, G] = Oracle(x, 4);
+    D = -G;
     for iter = 1:iter_max
         [F, G] = Oracle(x, 4);
         alpha = alpha0;
@@ -138,21 +140,6 @@ function [fopt, xopt, gopt,log_iter,log_F] = Optim(Oracle, xini, alpha0, iter_ma
         [Fc, Gc] = Oracle(x, 4);
         log_iter($+1) = iter;
         log_F($+1) = Fc;
-    end
-    xopt = x;
-    [fopt, gopt] = Oracle(xopt, 4);
-endfunction
-
-function [fopt, xopt, gopt,log_iter,log_F] = OptimTest(Oracle, xini, alpha0, iter_max, iter_max_alpha, meth)
-    alpha = 1;
-    x = xini;
-    W = ones(3,3);
-    log_iter = [];
-    log_F = [];
-    for iter = 1:iter_max
-        [F, G] = Oracle(x, 4);
-        D = -G;
-        x = x + alpha * D;
     end
     xopt = x;
     [fopt, gopt] = Oracle(xopt, 4);

@@ -58,13 +58,13 @@
 // ----------------------------
 // Minimisation proprement dite
 // ----------------------------
-    meth = "GRADF";
+    meth = "GRADC";
     iter_max = 10000;
     iter_max_alpha = 10000;
-    alpha0 = 0.1;
+    alpha0 = 1;
    // Exemple : la fonction "optim" de Scilab
    //
-   [fopt,xopt,gopt,log_iter,log_F] = OptimTest(OraclePH, xini, alpha0, iter_max, iter_max_alpha, meth);
+   [fopt,xopt,gopt,log_iter,log_F] = Optim(OraclePH, xini, alpha0, iter_max, iter_max_alpha, meth);
     plot(log_iter, log_F);
    // -----> A completer...
 
