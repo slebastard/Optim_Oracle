@@ -70,7 +70,7 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
       
       xp = xn;
       xn = x + (alphan*D);
-      [Fd, Gd] = Oracle(xn, ind)
+      [Fd, Gd] = Oracle(xn, ind);
 
       // Calcul des conditions de Wolfe
 
@@ -95,11 +95,7 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
       //   faire ok = 1 : on sort alors de la boucle while
       // - sinon, modifier la valeur de alphan : on reboucle.
 
-      // -----> A completer...
-      // -----> A completer...
-
       // Test d'indistinguabilite
-
       if norm(xn-xp) < dltx then
         ok = 2;
       end

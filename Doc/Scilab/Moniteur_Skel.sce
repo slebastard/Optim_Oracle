@@ -54,17 +54,18 @@
    // La dimension (n-md) est celle du probleme primal
 
    xini = 0.1 * rand(n-md,1);
+   xpini = 0.1 * rand(n-md,1);
 
 // ----------------------------
 // Minimisation proprement dite
 // ----------------------------
     meth = "QNEWT";
-    iter_max = 10000;
+    iter_max = 1000;
     iter_max_alpha = 1000;
-    alpha0 = 1;
+    alpha0 = 0.0002;
    // Exemple : la fonction "optim" de Scilab
 
-   [fopt,xopt,gopt,log_iter,log_F] = Optim(OraclePH, xini, alpha0, iter_max, iter_max_alpha, meth);
+   [fopt,xopt,gopt,log_iter,log_F] = Optim(OraclePH, xini, xpini, alpha0, iter_max, iter_max_alpha, meth);
     //plot(log_iter, log_F);
    // -----> A completer...
 
