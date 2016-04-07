@@ -1,4 +1,4 @@
-function [q,z,f,p]=HydrauliqueP(qc)
+function [q,z,f,p]=HydrauliqueP(q, isDual)
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,8 +44,9 @@ function [q,z,f,p]=HydrauliqueP(qc)
 // ---------------
 // Debits des arcs
 // ---------------
-
-   q = q0 + (B*qc);
+    if [~isDual] then
+       q = q0 + (B*q);
+    end
 
 // -------------------------
 // Pertes de charge des arcs

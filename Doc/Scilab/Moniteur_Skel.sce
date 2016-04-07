@@ -39,6 +39,7 @@
    // Exemple : la fonction "optim" de Scilab
    //
    exec('Oracle.sce');
+   exec('Oracle_lagrangien.sce');
    exec('Gradient_F.sci');
    exec('Methodes.sci');
    titrgr = "Fonction optim de Scilab sur le probleme primal";
@@ -51,29 +52,32 @@
 // Initialisation de l'algorithme
 // ------------------------------
 
-   // La dimension (n-md) est celle du probleme primal
+   // La dimension (dim) est celle du probleme primal
 
-   xini = 0.1 * rand(n-md,1);
-   xpini = 0.1 * rand(n-md,1);
+   dim = md
+   lambdaIni = 0.1 * rand(dim,1);
+   lambdaPIni = 0.1 * rand(dim,1);
 
 // ----------------------------
 // Minimisation proprement dite
 // ----------------------------
-    meth = "QNEWT";
+    meth = "GRADV";
     iter_max = 1000;
     iter_max_alpha = 1000;
-    alpha0 = 0.0002;
+    alpha0 = 1;
    // Exemple : la fonction "optim" de Scilab
 
-   [fopt,xopt,gopt,log_iter,log_F] = Optim(OraclePH, xini, xpini, alpha0, iter_max, iter_max_alpha, meth);
+   [fopt,lambdaOpt,gopt,log_iter,log_F] = Optim(OracleDH, lambdaIni, lambdaPIni, alpha0, iter_max, iter_max_alpha, meth);
     //plot(log_iter, log_F);
    // -----> A completer...
+   //calculer x à partir de lambda
+   xopt = dual_arg(lambdaOpt)
 
 // --------------------------
 // Verification des resultats
 // --------------------------
 
-   [q,z,f,p] = HydrauliqueP(xopt);
+   [q,z,f,p] = HydrauliqueP(xopt, %T);
 
    Verification(q,z,f,p);
 

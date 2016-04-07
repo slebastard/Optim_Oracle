@@ -94,7 +94,7 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
       // - si les deux conditions de Wolfe sont verifiees,
       //   faire ok = 1 : on sort alors de la boucle while
       // - sinon, modifier la valeur de alphan : on reboucle.
-
+      //disp(xn-xp)
       // Test d'indistinguabilite
       if norm(xn-xp) < dltx then
         ok = 2;
