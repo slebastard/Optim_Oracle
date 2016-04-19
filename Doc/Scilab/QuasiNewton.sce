@@ -1,3 +1,13 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//         RESOLUTION D'UN PROBLEME D'OPTIMISATION SANS CONTRAINTES          //
+//                                                                           //
+//                Methode de quasi-Newton                                    //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
+// Algorithme BFGS d'évaluation d'une approximation de la matrice hessienne
+
 function [Wn] = bfgs(xp, xn, Gp, Gn, Wp)
     delta_x = xn - xp
     delta_g = Gn - Gp
@@ -10,6 +20,8 @@ function [Wn] = bfgs(xp, xn, Gp, Gn, Wp)
         Wn = dif_1 * Wp * dif_2 + (1/(delta_g' * delta_x))*(delta_x * delta_x');
     end
 endfunction
+
+// Mise à jour de l'estimation de la hessienne, calcul de la direction de descente
 
 function [D, Wn] = quasi_newton(Oracle, xp, xn, Wp)
     ind = 4;

@@ -1,13 +1,3 @@
-function [W1_is_OK] = Wolfe1_cond(F,Fd,G,alpha,D,w1)
-    W1_is_OK = (Fd <= F + w1*alpha*G'*D);
-endfunction
-
-function [W2_is_OK] = Wolfe2_cond(F,G,Gd,alpha,D,w2)
-    W2_is_OK = (Gd'*D >= w2*G'*D);
-endfunction
-
-function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
-
 //////////////////////////////////////////////////////////////
 //                                                          //
 //   RECHERCHE LINEAIRE SUIVANT LES CONDITIONS DE WOLFE     //
@@ -32,6 +22,18 @@ function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
 //    omega2 : coefficient pour la 2-eme condition de Wolfe //
 //                                                          //
 //////////////////////////////////////////////////////////////
+
+// Prédicat de la première condition de Wolfe
+function [W1_is_OK] = Wolfe1_cond(F,Fd,G,alpha,D,w1)
+    W1_is_OK = (Fd <= F + w1*alpha*G'*D);
+endfunction
+
+// Prédicat de la seconde condition de Wolfe
+function [W2_is_OK] = Wolfe2_cond(F,G,Gd,alpha,D,w2)
+    W2_is_OK = (Gd'*D >= w2*G'*D);
+endfunction
+
+function [alphan,ok]=Wolfe(alpha,x,D,Oracle,iter_max)
 
 // -------------------------------------
 // Coefficients de la recherche lineaire

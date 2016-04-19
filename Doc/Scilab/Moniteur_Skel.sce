@@ -53,32 +53,53 @@
 // ------------------------------
 
    // La dimension (dim) est celle du probleme primal
-
-   dim = md
+   is_primal = %T;
+   
+   dim = n - md
    lambdaIni = 0.1 * rand(dim,1);
    lambdaPIni = 0.1 * rand(dim,1);
 
 // ----------------------------
 // Minimisation proprement dite
 // ----------------------------
-    meth = "GRADV";
+    meth = "GRADF";
     iter_max = 1000;
-    iter_max_alpha = 1000;
-    alpha0 = 1;
-   // Exemple : la fonction "optim" de Scilab
+    iter_max_alpha = 1e3;
+    alpha0 = 3e-5;
 
-   [fopt,lambdaOpt,gopt,log_iter,log_F] = Optim(OracleDH, lambdaIni, lambdaPIni, alpha0, iter_max, iter_max_alpha, meth);
-    //plot(log_iter, log_F);
-   // -----> A completer...
-   //calculer x à partir de lambda
-   xopt = dual_arg(lambdaOpt)
+    tic()
+    // Calcul du vecteur optimal (primal ou dual selon contexte)
+   [fopt, lambdaOpt, gopt, log_iter, log_F, log_G, log_P] = Optim(OraclePH, lambdaIni, lambdaPIni, alpha0, iter_max, iter_max_alpha, meth);
+    disp("Temps de calcul de la méthode")
+    disp(toc())
+    
+// ---------------------------------------------------------
+// Visualisation de l'évolution des variables d'optimisation
+// ---------------------------------------------------------
+    disp("Évolution de la fonctionnelle énergie en fct de itération")
+    plot(log_iter, log_F);
+    
+    //disp("Évolution du gradient en fct de itération")
+    //plot(log_iter, log_G);
+    
+    //disp("Évolution du pas en fct de itération")
+    //plot(log_iter, log_P);
 
-// --------------------------
-// Verification des resultats
-// --------------------------
+    if is_primal then
+        xopt = lambdaOpt;
+        [q,z,f,p] = HydrauliqueP(xopt, %F);
+        Verification(q,z,f,p);
+    else
+        // -----------------
+        // Passage au primal
+        // -----------------
+        xopt = dual_arg(lambdaOpt);
+        // --------------------------
+        // Verification des resultats
+        // --------------------------
+        [q,z,f,p] = HydrauliqueP(xopt, %T);
+        Verification(q,z,f,p);
+    end
 
-   [q,z,f,p] = HydrauliqueP(xopt, %T);
-
-   Verification(q,z,f,p);
 
 //

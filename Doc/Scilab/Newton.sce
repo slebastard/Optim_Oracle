@@ -1,3 +1,11 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//         RESOLUTION D'UN PROBLEME D'OPTIMISATION SANS CONTRAINTES          //
+//                                                                           //
+//                      Methode de Newton                                    //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
 function D = newton(Oracle, x)
     ind = 7
     [F ,G ,H] = Oracle(x, ind);
